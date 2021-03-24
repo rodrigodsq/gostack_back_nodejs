@@ -135,6 +135,12 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 * src/repositories/*.ts   :   `ira conter metodos adicionais para criar consultas mais complexas no banco`;
 
 
+# ---------------------------- AUTENTICAÇÃO ------------------------------------------
+
+* refresh token   :   para o token ser gerado novamente a partir do token antigo e ñ precisar ficar logando sempre;
+
+* src/@types/express.d.ts   :   `arquivo utilizado para sobreescrever uma tipagem dentro do express, criar uma nova var dentro do express para guarda os valores passados no middlewares para as rotas, override de typagem`;
+
 # ---------------------------------------------------------------
 
 * video com atraso, deixar o sincronismo em 5.9
@@ -143,6 +149,6 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * para saber todos os comandos do vscode aperte crtl+shift+p e digite open keyboard shortcuts;
 
-* KISS    :   programar de forma simples;
+* KISS    :   programar de forma simples (tipo metodologia);
 
 * aula "3 - Criação de Registros" foi um divisor de aguas para entender a estrutura da aplicação;
