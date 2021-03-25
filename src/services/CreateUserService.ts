@@ -1,6 +1,8 @@
 import { getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
+
 import User from '../models/User';
+import AppError from '../errors/AppError';
 
 // interface basicamente são para definir tipagem como: os tipos dos paramentros, o tipo do objeto que vai ser retornado(como no authUserServ);
 interface Request {
@@ -21,7 +23,7 @@ class CreateUserService {
 
     // Endereço de email já usado
     if (checkUserExists) {
-      throw new Error('Email address already used');
+      throw new AppError('Email address already used');
     }
 
     const hashedPassword = await hash(password, 8);

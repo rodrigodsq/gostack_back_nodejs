@@ -137,9 +137,19 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 # ---------------------------- AUTENTICAÇÃO ------------------------------------------
 
-* refresh token   :   para o token ser gerado novamente a partir do token antigo e ñ precisar ficar logando sempre;
+* refresh token   :   `para o token ser gerado novamente a partir do token antigo e ñ precisar ficar logando sempre`;
 
 * src/@types/express.d.ts   :   `arquivo utilizado para sobreescrever uma tipagem dentro do express, criar uma nova var dentro do express para guarda os valores passados no middlewares para as rotas, override de typagem`;
+
+* src/middleware/ensureAuthenticated.ts   :   `arquivo para validar o token e caso seja valido, colocar o id do user na request e passar para a rota seguinte`;
+
+# ---------------------------TRATAR ERRORS -----------------------------------------
+
+* src/errors/AppError   :   `arquivo para tratamento e padronização dos erros, onde contem uma "message" e "statusCode", normalmente setamos os errors no nosso service e enviamos ao cliente nas nossas routes`;
+
+* no serve(arquivo principal), vamos fazer uma trativa global de errors nas rotas;
+
+* yarn add express-async-errors   :   `pacote para o express pode capturar erros mesmo que seja async, pois quando as rotas são async e temos erros o express fica esperando que algo volte e paralisa a aplicação`;
 
 # ---------------------------------------------------------------
 
