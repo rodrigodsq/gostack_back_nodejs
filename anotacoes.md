@@ -151,6 +151,11 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * yarn add express-async-errors   :   `pacote para o express pode capturar erros mesmo que seja async, pois quando as rotas são async e temos erros o express fica esperando que algo volte e paralisa a aplicação`;
 
+
+# ----------------------- CORS -----------------------------------------
+
+* yarn add cors   :   instalação do cors, utilizado para que sites não confiaveis acessem nossa api;
+
 # ---------------------------------------------------------------
 
 * video com atraso, deixar o sincronismo em 5.9
