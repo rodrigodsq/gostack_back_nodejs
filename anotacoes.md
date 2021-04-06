@@ -156,6 +156,72 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * yarn add cors   :   instalação do cors, utilizado para que sites não confiaveis acessem nossa api;
 
+
+# ----------------------- ARQUITETURA E DDD -----------------------------------------
+
+* Para uma arquitetura bacana devemos dividir a aplicação por cada area de dominio daqeuele modulo/arquivo(cada funcionalidade tipo de usuarios, agendamentos), colocando as abstrações de banco de dados e regras de negocios em uma pasta especifica;
+
+* DDD   :   Domain Driven Design;     `É uma metodologia(tipo scrum)  onde usamos para definir a estrutura de pasta comm base nas regras de negocios. è aplicado apenas ao  backend `;
+
+* o ddd é dividido em camada de dominio e camada de infra, onde na camada de dominio colocamos as regras de negocio da aplicação e na infra as tecnologias utilizadas. sempre que conversamos com clientes não tecnicos, nos falamos sobre a camada de dominio para saber mais sobre as funcionalidades, ja na camada de infra é um papo mais tecnico para definir as tecnologias que serão ou estão sendo utilizadas;
+
+* TDD   :   Test Driven Development;    `É uma forma(Metodologia) de programar orientado a testes que é mais produtiva, onde criamos os testes primeiros para dpois criamos as funcionalidades. è aplicado tanto no back quanto no frontend`;
+
+* Pasta modules   :   `ira conter cada area de atuação, cada modulo de funcionalidades, cada setor da aplicação`;
+
+* Pasta shared    :   `pasta onde ira conter arquivos que serão compartilhados por toda a aplicação, como a conexão com o banco de dados`;
+
+* devido aos error de importação cofiguramos o arquivo tsconfig.json com as informações que facilitará nas importações (@modules, @shared);
+
+* yarn add tsconfig-paths -D   :   `devidos as alterações nas importações devemos instalar essa dependencia para que o nodejs consiga compreender as importações e alteramos o package.json adicionando "-r tsconfig-paths/register" a chave dev:server para que encontre as importações`;
+
+* yarn add tsyringe   :   `dependencia/lib para injeção de dependencia (Para não precisar passar sempre como paramentro o nosso repositorio no contructor dos services)`;
+
+* ---------------- Estrutura das pastas -----------------
+```javascript
+
+  const src: {
+    @types: `contem arquivos de tipagem do typescript`,
+    config: `pasta ondefica algumas configurações padrão`,
+    modules: {
+      appointments: {
+        dtos: `ficará interfaces com os tipos de dados dos appointments, para ser utilizado sempre que precisar de tipagem `,
+        infra: {  `ficará os conteudos relacionamos a parte mais tecnica, como tecnologias utilizadas`
+          http: {`pasta onde irá conter tecnologias relacionadas ao express`
+            routes: `arquivos de rotas`,
+            middlewares: `arquivos de autenticação das rotas, normalmente usado para auth com JWT`,
+            controllers: `são responsaveis por receber as requisições das rotas, enviar para os arquivos fazerem todas as funcionalidades, e retorna o resultado`,
+          },
+          typeorm: {  `ficara conteudo relacionado a tecnologia typeorm`
+            entities: `pasta onde contem os arquivos de models do bd`,
+            repositories: `pasta que contem arquivos de consultas mais complexas(SQL) ao BD`,
+          },
+        }
+        repositories: `pasta p sabemos as interface que serão implementadas independente da tacnologia(ORM), principio SOLID, Liskov Substitution Principle`,
+        services: `pasta onde ficara os arquivos com funcionalidades das regras de negocios, sem vinculo com nenhuma tecnologia diretamente`,
+      }
+    },
+    shared: { `pasta onde ira conter arquivos que serão compartilhados por toda a aplicação`
+      conteiner: `Arquivos para injeção de dependencia, conteiners que serão usados pelos arquivos do services (o service busca pelo id a injeção desejada)`,
+      errors: `pasta com arquivo para definir tipos de errors`,
+      infra: { `ficará os conteudos relacionamos a parte mais tecnica, como tecnologias utilizadas`
+        http: { `pasta onde irá conter tecnologias relacionadas ao express`
+          middlewares: `arquivos middlewares`,
+          routes: `arquivos de rotas`,
+          server: `arquivo principal da aplicação`
+        },
+        typeorm: { `ficara conteudo relacionado a tecnologia typeorm`
+          migrations: `pasta com arquivos para estruturar o bd`,
+          index:  `arquivo de conexão com o bd`;
+        },
+      }
+    }
+  }
+
+```
+* --------------------------------
+
+
 # ---------------------------------------------------------------
 
 * video com atraso, deixar o sincronismo em 5.9
