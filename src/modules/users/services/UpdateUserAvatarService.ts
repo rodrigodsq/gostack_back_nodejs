@@ -1,9 +1,7 @@
-import path from 'path';
-import fs from 'fs';
 import { injectable, inject } from 'tsyringe';
 
-import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUserRepository';
 
@@ -17,6 +15,7 @@ class UpdateUserAvatarService {
   // private usersRepository: IUsersRepository   :   ja declarando uma var no paramentro do contrutor;
   constructor(
     @inject('UsersRepository') private usersRepository: IUsersRepository,
+    @inject('StorageProvider') private storageProvider: IStorageProvider,
   ) {}
 
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
@@ -26,21 +25,15 @@ class UpdateUserAvatarService {
       throw new AppError('Only authenticate users can change avatar.', 401);
     }
 
-    // caso ele ja tiver uma avatar, vamos apaga-lo para não ficar enchendo a memoria do meu server e add o novo;
+    // caso ele ja tiver uma avatar, vamos apaga-lo para não ficar enchendo a memoria do meu server;
     if (user.avatar) {
-      // pegando o diretorio do arquivo(imagem);
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-
-      // verificando se o arquivo existe no diretorio;
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) {
-        // apagando o arquivo com a funcao unlink do fs;
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await this.storageProvider.deleteFile(user.avatar);
     }
 
-    user.avatar = avatarFilename;
+    // add o novo avatar;
+    const fileName = await this.storageProvider.saveFile(avatarFilename);
+
+    user.avatar = fileName;
 
     await this.usersRepository.save(user);
 

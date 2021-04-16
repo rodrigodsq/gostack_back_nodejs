@@ -1,9 +1,9 @@
-import { hash } from 'bcryptjs';
 import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUserRepository';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 // interface basicamente são para definir tipagem como: os tipos dos paramentros, o tipo do objeto que vai ser retornado(como no authUserServ);
 interface IRequest {
@@ -17,6 +17,9 @@ class CreateUserService {
   // private usersRepository: IUsersRepository   :   ja declarando uma var no paramentro do contrutor;
   constructor(
     @inject('UsersRepository') private usersRepository: IUsersRepository,
+
+    // ja injetamos as funcionalidades de "BCryptHashProvider" (que esta sendo passado) na propriedade "hashProvider";
+    @inject('HashProvider') private hashProvider: IHashProvider,
   ) {}
 
   // Promise<User>  :   informando qual o tipo de retorno;
@@ -28,7 +31,7 @@ class CreateUserService {
       throw new AppError('Email address already used');
     }
 
-    const hashedPassword = await hash(password, 8);
+    const hashedPassword = await this.hashProvider.generateHash(password);
 
     const user = await this.usersRepository.create({
       name,

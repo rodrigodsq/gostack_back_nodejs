@@ -196,13 +196,28 @@ src/server.ts   :   `diretorio do aquivo de execução`;
             entities: `pasta onde contem os arquivos de models do bd`,
             repositories: `pasta que contem arquivos de consultas mais complexas(SQL) ao BD`,
           },
-        }
-        repositories: `pasta p sabemos as interface que serão implementadas independente da tacnologia(ORM), principio SOLID, Liskov Substitution Principle`,
+        },
+        providers: { `contem arquivos provedores de funcionalidades para o modulo de users`;
+          HashProvider: { `pasta com as funcionalidades de criptografia(hash no caso)`
+            fakes: `fica arquivos de testes, onde simulam uma criptografia, não utilizar tecnlogia de criptografia`,
+            implementations: `fica a biblioteca, a forma que usamos para fazer criptografia`,
+            models: `ficará as interfaces com os parametros e metodos que um provedor de hash precisa ter (caso mude a tec de cript, nos ja sabemos os metodos)`,
+          },
+        },
+        repositories: {`pasta p sabemos as interface que serão implementadas independente da tacnologia(ORM), principio SOLID, Liskov Substitution Principle`
+          fakes: `ficara arquivos fakes onde simula interações com o banco de dados e serviçoes externos`
+        },
         services: `pasta onde ficara os arquivos com funcionalidades das regras de negocios, sem vinculo com nenhuma tecnologia diretamente`,
       }
     },
     shared: { `pasta onde ira conter arquivos que serão compartilhados por toda a aplicação`
-      conteiner: `Arquivos para injeção de dependencia, conteiners que serão usados pelos arquivos do services (o service busca pelo id a injeção desejada)`,
+      conteiner: {`Arquivos para injeção de dependencia, conteiners que serão usados pelos arquivos do services (o service busca pelo id a injeção desejada)`;
+        StorageProvider: { `ficara os arquivos de configuração para upload de documentos (imagens, pdf, csv)`
+          fakes: `fica arquivos de testes, onde simulam upload de arquivos`,
+          implementations: `fica a biblioteca, a forma que usamos para fazer upload de arquivos`,
+          models: `ficará as interfaces e os metodos que um Storage de arquivos precisa ter (caso mude a tec, nos ja sabemos os metodos)`,
+        }
+      },
       errors: `pasta com arquivo para definir tipos de errors`,
       infra: { `ficará os conteudos relacionamos a parte mais tecnica, como tecnologias utilizadas`
         http: { `pasta onde irá conter tecnologias relacionadas ao express`
@@ -221,6 +236,41 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 ```
 * --------------------------------
 
+* exemplo de fluxo de funcionalidade :    `Route -> Controller -> Servico -> Repositorio -> Servico -> Controller`;
+
+
+# ------------------------------------- TESTES E TDD ----------------------------------------
+
+* Testes automatizados servem para que nossa aplicação continue funcionando independente do numero de novas funcionalidades e do numero de devs o time.
+
+* Testes unitarios:   `Testam funcionalidades especificas da nossa aplicação (precisam ser funcões puras (que ñ depende de outras partes da aplicação), que jamais irão fazer chamadas a api, ñ pode depender de serviços externos) (utilizar tdd)`;
+
+* Testes de integração:   `Testam uma funcionalidade completa passando por varias camadas da aplicação (como por exemplo todo o fluxo de cadastro de usuario).`;
+
+* Testes E2E:   `Testes que simulam a ação do usuario dentro da nossa aplicação. (Relacionado ao front end, por isso ñ conseguimos no nodejs)`;
+
+* TDD :   `Test Driven Development (desenvolvimento orientado a testes)`
+
+* yarn add jest -D  :   `dependencia para fazer testes`;
+  - yarn jest -- init : `para iniciar as configurações do jest  Passo: Y, N, node, N, babel?, Y `;
+  - yarn add ts-jest -D : `Para conseguir ler os testes em typescript`;
+
+* arquivo jest.config.js  :   `arquivo com as configurações padrões do jest, estão comentadas com o valor padrão`;
+  - Informações abaixo sobre configurações do arquivo jest.config.ts ↓
+  - chave'ts-jest'  :   `para que o jest entenda ts;
+  - chave "testMatch": `informa sobre os caminhos padrões onde irá procurar os testes, no caso ira buscar por todo arquivo que termina com spec.ts`;
+  - chave "moduleNameMapper" : `devido a estarmos usando @modules para definir caminhos/rotas, vamo importar o "pathsToModuleNameMapper de ts-jest/utils" e ""compilerOptions de ./tsconfig.json", para que o jest possa entender; (para que funcione corretamente o arquivo ./tsconfig.json ñ pode ter comentarios)`;
+  - chave "collectCoverage" : `para saber quais arquivos ja foram testados`;
+  - chave "collectCoverageFrom" : `caminho para os arquivos que estamos testando`;
+  - chave "coverageDirectory" : `nome da pasta onde ficara as informações sobre os coverage/arquivosTestados`;
+  - chave "coverageReporters" : `o que ira conter dentro dos arquivos de informação de coverages`;
+
+* em testes "unitarios" criamos um repository fake, para que não tenha interação com o bd;
+
+* coverage : `para saber quais arquivos ja foram testados e informações sobre os testes`;
+
+* um teste nunca pode depender de outro, nada pode ser reaproveitado de outro teste na execução;
+
 
 # ---------------------------------------------------------------
 
@@ -233,3 +283,7 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 * KISS    :   programar de forma simples (tipo metodologia);
 
 * aula "3 - Criação de Registros" foi um divisor de aguas para entender a estrutura da aplicação;
+
+* no .eslintrc.json o que esta dentro das chaves de env são arquivos expostos globalmente
+
+* nos services nunca importamos as tecnologias diretamente, apenas as interfaces delas, pq as tecnologias são colocadas por injeção de dependencia;
