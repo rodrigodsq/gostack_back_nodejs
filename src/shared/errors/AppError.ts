@@ -1,5 +1,5 @@
 class AppError {
-  // readonly: deixa meio que private para alterar o valor da propriedade(var);
+  // readonly: deixa meio que private para alterar o valor da propriedade(var), não podemos reatribuir valor;
   public readonly message: string;
 
   public readonly statusCode: number;

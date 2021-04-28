@@ -4,25 +4,29 @@ import { container } from 'tsyringe';
 import CreateUserService from '@modules/users/services/CreateUserService';
 
 export default class UsersController {
-  async create(request: Request, response: Response): Promise<Response> {
-    const { name, email, password } = request.body;
+  public async create(request: Request, response: Response): Promise<Response> {
+    try {
+      const { name, email, password } = request.body;
 
-    // arquivo para importa as funcionalidades do service, onde ocorre toda logica e interação com o bd
-    // container.resolve() :   informa que na class service ja esta recebendo a injeção de dependencia;
-    const createUser = container.resolve(CreateUserService);
+      // arquivo para importa as funcionalidades do service, onde ocorre toda logica e interação com o bd
+      // container.resolve() :   informa que na class service ja esta recebendo a injeção de dependencia;
+      const createUser = container.resolve(CreateUserService);
 
-    // executando a regra de negocio do service, e retornando o resultado na const user;
-    const user = await createUser.execute({
-      name,
-      email,
-      password,
-    });
+      // executando a regra de negocio do service, e retornando o resultado na const user;
+      const user = await createUser.execute({
+        name,
+        email,
+        password,
+      });
 
-    // removendo do user a chave password, para não ser retornado ao frontend;
-    // @ts-expect-error Vai ocorrer um erro no delete user.password, mas vou ignorar
-    delete user.password;
+      // removendo do user a chave password, para não ser retornado ao frontend;
+      // @ts-expect-error Vai ocorrer um erro no delete user.password, mas vou ignorar
+      delete user.password;
 
-    return response.json(user);
+      return response.json(user);
+    } catch (err) {
+      return response.status(400).json({ Error: err.message });
+    }
   }
 }
 

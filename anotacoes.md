@@ -118,6 +118,7 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 * Criando e configurando arquivos 'repositories/appointmentsRepositories', 'services/CreateAppointmentsService', 'routes/appointments.routes';
 
 * yarn add reflect-metadata   :   `arquivo necessario para o funcionamento do typeorm`;
+- ocorreu um error com esse "reflect-metadata", onde precisamos importa ele no inicio do arquivo "server.ts";
 
 * no ormconfig.json passamos a chave entities com o diretorio das nossas entidades;
 
@@ -216,6 +217,11 @@ src/server.ts   :   `diretorio do aquivo de execução`;
           fakes: `fica arquivos de testes, onde simulam upload de arquivos`,
           implementations: `fica a biblioteca, a forma que usamos para fazer upload de arquivos`,
           models: `ficará as interfaces e os metodos que um Storage de arquivos precisa ter (caso mude a tec, nos ja sabemos os metodos)`,
+        },
+        MailProvider: { `ficara arquivos de configuração para envio de emails`
+          fakes: `fica arquivos de testes, onde simulam envio de emails`,
+          implementations: `fica a biblioteca, a forma que usamos para fazer envio de emails`,
+          models: `ficará as interfaces e os metodos que um envio de emails precisa (caso mude a tec, nos ja sabemos os metodos)`,
         }
       },
       errors: `pasta com arquivo para definir tipos de errors`,
@@ -271,6 +277,86 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * um teste nunca pode depender de outro, nada pode ser reaproveitado de outro teste na execução;
 
+* comandos JEST :
+  - expect()   :   `significa "o que espero", onde colocamos o codigo ou a função que desejamos executar/testar`;
+  - toBe()   :   `significa "que seja", onde colocamos o resultado esperado do teste`;
+  - toHaveProperty() :  `espera que tenha a propriedade passada por paramentro no elemento esperado`;
+  - describe() : `utilizado para dividir os testes, para não serem todos iguais, com um paramentro de identificador`;
+  - it()   :   `tipo uma descrição de cada teste`;
+  - rejects :  `espera que retorne algum error`;
+  - toBeInstanceOf : `espera que seja uma instancia de determinado elemento`;
+  - spyOn  : `serve para espionar se alguma função da nossa aplicação foi executada`;
+  - toHaveBeenCalled : `serve para verificar se a função passada como parametro foi chamada/executada`;
+  - toHaveBeenCalledWith : `serve para verificar se a função passada como parametro foi chamada/executada, com um parametro especifico`;
+  * beforeEach() :   `função que é disparada sempre antes do teste`;
+
+  * yarn test src/modules/...     :   `passando um caminho/rota p executar apenas um teste especifico`;
+
+  * REGRA: ao criar teste faça da forma mais simples possivel e primeiro deve dar Error/RED, segundo faça dar certo/GREEN e dpois faça a refatoração onde colocamos todas funcionalidades e vamos testando;
+
+  * sempre que um expect tenha "rejects.toBeInstanceOf()" colocaremos um await antes do expect;
+
+
+# ----------------------------------MAPEANDO AS FEATURES---------------------------------------------
+
+* informar todas as funcionalidades do sistema;
+* OBS: a regra de negocio sempre deve esta se referenciando a algum requisito funcional, pq se ñ tiver tem alguma coisa errada;
+
+* -----RECUPERAÇÃO DE SENHA:-----
+  **Requisitos Funcionais**
+    - O Usuario deve poder recuperar sua senha informando seu e-mail;
+    - O usuario deve receber um email com instruções de recuperação de senha;
+    - O usuario deve poder resetar sua senha;
+  **Requisitos Ñ Funcionais** `são requisitos que ñ são ligados diretamente com a regra de negocio (parte mais tecnica, informa as tec)`;
+    - Utilizar Mailtrap para testar envios em ambiente de desenvolvimento;
+    - Utilizar amazon SES para envios em produção;
+    - O envio de e-mails deve acontecer em segundo plano (Background job); `utiliza conceito de fila onde colocamos todos esses serviços mais demorados em 2º plano`
+  **Regras de Negocio**
+    - O link enviado por email deve expirar em duas horas;
+    - O usuario precisa confirma a nova senha ao resetar sua senha;
+
+* -----ATUALIZAÇÃO DO PERFIL:-----
+  **Requisitos Funcionais**
+    - O usuario deve poder atualizar seu nome, email e senha;
+  **Regras de Negocio**
+    - O usuario não pode alterar seu email para um já utilizado;
+    - Para atualizar sua senha o usuario deve informa a senha antiga;
+    - Para atualizar sua senha, o usuario precisa confirma a nova senha;
+
+* -----PAINEL DO PRESTADOR:-----
+  **Requisitos Funcionais**
+    - O prestador deve poder listar seus agendamentos de um dia especifico;
+    - O prestador deve receber uma notificação sempre que houver um novo agendamento;
+    - O prestador deve poder visualizar as notificações não lidas;
+  **Requisitos Ñ Funcionais**
+    - Os agendamentos do prestador do dia devem ser armazenados em cache;
+    - As notificações devem ser armazenadas no MongoDB;
+    - As notificações do prestador devem ser enviadas em tempo-real com Socket.io;
+  **Regras de Negocio**
+    - A notificação deve ter um statusde lida ou não-lida para que o prestador possa controlar;
+
+* -----AGENDAMENTO DE SERVIÇOS:-----
+  **Requisitos Funcionais**
+    - O usuario deve poder listar todos os prestadores de serviços cadastrados;
+    - O usuario deve poder listar os dias de um mes com pelo menos um horario disponivel de um prestador;
+    - o usuario deve poder listar horarios disponiveis em um dia especifico de um prestador;
+    - O usuario deve poder realizar um novo agendamentocom um prestador;
+  **Requisitos Ñ Funcionais**
+    - A listagem de prestadores deve ficar armazenada em cache; `Para que não fique carregando sempre e gaste muito processamento`;
+  **Regras de Negocio**
+    - Cada agendamento deve durar uma hora exatamente;
+    - Os agendamentos devem estar disponiveis entre as 8h e 18h (Primeiro as 8h, ultimo as 17h);
+    - O usuario não pode agendar em um horario ja ocupado;
+    - O usuario não pode agendar em um horario que ja passou;
+    - O usuario não pode agendar um serviço consigo mesmo;
+
+
+
+# --------------RECUPERAÇÃO DE SENHA -------------------------
+
+* http//localhost:3000/password/forgot : `endpoint/rota para recuperação de senha, onde enviamos nosso email e é gerado um token para fazer a recuperação`;
+
+* http//localhost:3000/password/reset : `endpoint/rota para alterar a senha, onde enviamos a nova senha e o token que foi enviado ao nosso email na recuperação/forgot`;
 
 # ---------------------------------------------------------------
 
@@ -280,10 +366,28 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * para saber todos os comandos do vscode aperte crtl+shift+p e digite open keyboard shortcuts;
 
-* KISS    :   programar de forma simples (tipo metodologia);
+* KISS    :   programar de forma simples (tipo metodologia) (sempre que for começar uma feature comecar fazendo de uma forma estupidamente simples);
 
 * aula "3 - Criação de Registros" foi um divisor de aguas para entender a estrutura da aplicação;
 
 * no .eslintrc.json o que esta dentro das chaves de env são arquivos expostos globalmente
 
 * nos services nunca importamos as tecnologias diretamente, apenas as interfaces delas, pq as tecnologias são colocadas por injeção de dependencia;
+
+* readonly: não podemos reatribuir valor a propriedade, deixa meio que private;
+
+* MVP : `Minimo Produto Viavel (é fazer as funcionalidades essenciais para que o sistema funcione, e com o tempo vai aperfeiçoando)`;
+
+* assistir video 'jornada do usuario' p saber planejar/criar aplicações do zero;
+
+* SHIFT + END : `selecionar toda linha`;
+
+* Cronograma:
+  1. rotas e controllers;
+  2. Repositorio de tokens (Typeorm)
+  3. Criar migration de tokens
+  4. Provider de envio de email (dev)
+  5. Registrar providers no container
+  6. Testar tudo!!
+
+* constructor : `são iniciados junto com a aplicação, apenas uma vez`;

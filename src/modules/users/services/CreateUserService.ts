@@ -1,7 +1,6 @@
-import { injectable, inject } from 'tsyringe';
-
 import AppError from '@shared/errors/AppError';
-import User from '../infra/typeorm/entities/User';
+import User from '@modules/users/infra/typeorm/entities/User';
+import { injectable, inject } from 'tsyringe';
 import IUsersRepository from '../repositories/IUserRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
