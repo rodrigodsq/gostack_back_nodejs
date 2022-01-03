@@ -1,10 +1,10 @@
-import { inject, injectable } from 'tsyringe';
-import path from 'path';
-
-import AppError from '@shared/errors/AppError';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
+import AppError from '@shared/errors/AppError';
+import path from 'path';
+import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '../repositories/IUserRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
+
 
 interface IRequest {
   email: string;
@@ -28,6 +28,7 @@ class SendForgotPasswordEmailService {
 
     const { token } = await this.userTokensRepository.generate(user.id);
 
+    // rota de onde esta o template html que vai ser enviado no email.
     const forgotPasswordTemplate = path.resolve(
       __dirname,
       '..',

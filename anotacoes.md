@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-file -->
 # ------------------------ INSTALAÇÃO------------------------------
 
 * -------------------------------AULA1----------------------
@@ -285,7 +286,7 @@ src/server.ts   :   `diretorio do aquivo de execução`;
   - it()   :   `tipo uma descrição de cada teste`;
   - rejects :  `espera que retorne algum error`;
   - toBeInstanceOf : `espera que seja uma instancia de determinado elemento`;
-  - spyOn  : `serve para espionar se alguma função da nossa aplicação foi executada`;
+  - spyOn  : `serve para espionar se alguma função da nossa aplicação foi executada, saber se um metodo de alguma classe foi chamado`;
   - toHaveBeenCalled : `serve para verificar se a função passada como parametro foi chamada/executada`;
   - toHaveBeenCalledWith : `serve para verificar se a função passada como parametro foi chamada/executada, com um parametro especifico`;
   * beforeEach() :   `função que é disparada sempre antes do teste`;
@@ -295,6 +296,8 @@ src/server.ts   :   `diretorio do aquivo de execução`;
   * REGRA: ao criar teste faça da forma mais simples possivel e primeiro deve dar Error/RED, segundo faça dar certo/GREEN e dpois faça a refatoração onde colocamos todas funcionalidades e vamos testando;
 
   * sempre que um expect tenha "rejects.toBeInstanceOf()" colocaremos um await antes do expect;
+
+  * o jest algumas vezes guarda em cache os testes ja feito, ai caso vctenha corrigido um test e continue o error execute o comando no terminal `yarn jest --clearCache`;
 
 
 # ----------------------------------MAPEANDO AS FEATURES---------------------------------------------
@@ -391,3 +394,13 @@ src/server.ts   :   `diretorio do aquivo de execução`;
   6. Testar tudo!!
 
 * constructor : `são iniciados junto com a aplicação, apenas uma vez`;
+
+* para entendimento do flow correto
+    - routes -> controllers -> services
+    - aula "5 - salvando tokens no banco" é boa para entender o fluxo da aplicação;
+
+* podemos importar de outro modulo tranquilo, so não podemos na camada de dominio (modulo) importar uma dependencia da camada de infra;
+
+* comandos para startar a docker no linux do trampo é "dk" e apos "docker start 41d0affdd50e", apos isso podemos startar o o nosso servidor com 'yarn dev:server';
+
+* proxima aula é a "3-agendamento / 4 - Listando horarios disponiveis"
