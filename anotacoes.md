@@ -361,6 +361,40 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * http//localhost:3000/password/reset : `endpoint/rota para alterar a senha, onde enviamos a nova senha e o token que foi enviado ao nosso email na recuperação/forgot`;
 
+
+# ------------------------MONGODB---------------------------------------
+
+* é utilizado o mongo quando tem uma grande quantia de dados entrando ou sendo alterados;
+* é indicado para dados que não precisam de relacionamentos, um bom exemplo é para notificações;
+
+* criando o container do mongo no Docker:  `docker run --name mongodb -p 27017:27017 -d -t mongo`
+    - -d: para ficar rodando em detachedmod, backgorund (segundo plano);
+    - -t: para não bloquear meu terminal;
+    - hash gerado ao criar: 1c62a46a5dd113224630c503bdfcceba9dc972db44418ce753d0f7cb4ab6f4b3
+
+* no mongo chamamos as entidades (tabelas) de schemas;
+
+**Configurar o mongo no ormconfig.json**
+{
+    "name": "mongo",
+    "type": "mongodb",
+    "host": "localhost",
+    "port": 27017,
+    "database": "gobarber",
+    "useUnifiedTopology": true,          `para remover um erro que da quando inicia a conexão com o mongo`;
+    "entities": [
+        "./src/modules/**/infra/typeorm/schemas/*.ts"
+    ]
+}
+
+* para a conexão ocorrer certinho devemos ir no shared/infra/typeorm/index.ts e colocar a importação como `createConnections`;
+
+* precisa instalar essa lib para poder funcionar ao rodar o servidor    :   `yarn add mongodb`;
+
+* no mongo não é armazenado id no formato uuid, mas no formato "ObjectID" que é importado do typeorm;
+
+**sempre que for usar uma conexão que não for a default (no ormconfig.json) devemos passar o nome da conexão como parametro, example em: notification/infra/typeorm/NotificationRepository**
+
 # ---------------------------------------------------------------
 
 * video com atraso, deixar o sincronismo em 5.9
@@ -403,4 +437,4 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * comandos para startar a docker no linux do trampo é "dk" e apos "docker start 41d0affdd50e", apos isso podemos startar o o nosso servidor com 'yarn dev:server';
 
-* proxima aula é a "3-agendamento / 4 - Listando horarios disponiveis"
+* mudar os icones do vscode aperta (CTRL + P) dpois digita (>json) e escolhe a segunda opção, ai vai na chave "material-icon-theme.folders.associations" para alterar os icones;
