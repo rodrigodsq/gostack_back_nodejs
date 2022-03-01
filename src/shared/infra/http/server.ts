@@ -1,15 +1,14 @@
-import 'reflect-metadata';
-
-import express, { NextFunction, Request, Response } from 'express';
-import cors from 'cors';
-import 'express-async-errors';
-
 import uploadConfig from '@config/upload';
-import AppError from '@shared/errors/AppError';
-import routes from './routes';
-
 import '@shared/container';
+import AppError from '@shared/errors/AppError';
 import '@shared/infra/typeorm';
+import { errors } from 'celebrate';
+import cors from 'cors';
+import 'dotenv/config';
+import express, { NextFunction, Request, Response } from 'express';
+import 'express-async-errors';
+import 'reflect-metadata';
+import routes from './routes';
 
 const app = express();
 
@@ -19,6 +18,8 @@ app.use(express.json());
 app.use('/files', express.static(uploadConfig.UploadsFolder));
 
 app.use(routes);
+
+app.use(errors());      //para pegar os errors do celebrate (no caso quando vem alguma informação da request vazia);
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   // verificando se o erro é uam instancia da class AppError, pq se for que dizer que é um error originado pela nossa aplicação

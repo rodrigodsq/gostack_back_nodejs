@@ -5,7 +5,6 @@ import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '../repositories/IUserRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
 
-
 interface IRequest {
   email: string;
 }
@@ -47,7 +46,7 @@ class SendForgotPasswordEmailService {
         variables: {
           // passando o valor/variaves que vai ser utilizada no file/html;
           name: user.name,
-          link: `http://localhost:3000/reset_password?token=${token}`,
+          link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
         },
       },
     });

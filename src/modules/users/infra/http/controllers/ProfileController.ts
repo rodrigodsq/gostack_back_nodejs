@@ -1,8 +1,9 @@
+import ShowProfileService from '@modules/users/services/ShowProfileService';
+import UpdateProfileService from '@modules/users/services/UpdateProfileService';
+import { classToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import UpdateProfileService from '@modules/users/services/UpdateProfileService';
-import ShowProfileService from '@modules/users/services/ShowProfileService';
 
 export default class ProfileController {
   // exibir dados do perfil do usuario logado
@@ -15,40 +16,28 @@ export default class ProfileController {
 
     const user = await showProfile.execute({ user_id });
 
-    // removendo do user a chave password, para não ser retornado ao frontend;
-    // @ts-expect-error Vai ocorrer um erro no delete user.password, mas vou ignorar
-    delete user.password;
-
-    return response.json(user);
+    return response.json(classToPlain(user));
   }
 
   // atualizar usuario logado
   public async update(request: Request, response: Response): Promise<Response> {
-    try {
-      const user_id = request.user.id;
-      const { name, email, old_password, password } = request.body;
+    const user_id = request.user.id;
+    const { name, email, old_password, password } = request.body;
 
-      // arquivo para importa as funcionalidades do service, onde ocorre toda logica e interação com o bd
-      // container.resolve() :   informa que na class service ja esta recebendo a injeção de dependencia;
-      const updateProfile = container.resolve(UpdateProfileService);
+    // arquivo para importa as funcionalidades do service, onde ocorre toda logica e interação com o bd
+    // container.resolve() :   informa que na class service ja esta recebendo a injeção de dependencia;
+    const updateProfile = container.resolve(UpdateProfileService);
 
-      // executando a regra de negocio do service, e retornando o resultado na const user;
-      const user = await updateProfile.execute({
+    // executando a regra de negocio do service, e retornando o resultado na const user;
+    const user = await updateProfile.execute({
         user_id,
         name,
         email,
         old_password,
         password,
-      });
+    });
 
-      // removendo do user a chave password, para não ser retornado ao frontend;
-      // @ts-expect-error Vai ocorrer um erro no delete user.password, mas vou ignorar
-      delete user.password;
-
-      return response.json(user);
-    } catch (err) {
-      return response.status(400).json({ Error: err.message });
-    }
+    return response.json(classToPlain(user));
   }
 }
 

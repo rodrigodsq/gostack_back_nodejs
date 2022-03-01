@@ -1,7 +1,7 @@
+import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarService';
+import { classToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-
-import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarService';
 
 export default class UserAvatarController {
   async update(request: Request, response: Response): Promise<Response> {
@@ -12,10 +12,7 @@ export default class UserAvatarController {
       avatarFilename: request.file.filename,
     });
 
-    // @ts-expect-error Vai ocorrer um erro no delete user.password, mas vou ignorar
-    delete user.password;
-
-    return response.json(user);
+    return response.json(classToPlain(user));
   }
 }
 

@@ -10,11 +10,6 @@ import IUserTokensRepository from '@modules/users/repositories/IUserTokensReposi
 import { container } from 'tsyringe';
 import './providers';
 
-
-
-
-
-
 container.registerSingleton<IAppointmentRepository>(
   'AppointmentsRepository',
   AppointmentsRepository,

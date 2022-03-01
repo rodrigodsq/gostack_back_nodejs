@@ -395,8 +395,68 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 **sempre que for usar uma conexão que não for a default (no ormconfig.json) devemos passar o nome da conexão como parametro, example em: notification/infra/typeorm/NotificationRepository**
 
-# ---------------------------------------------------------------
+* sempre que for rodar o projeto precisamos rodar a docker do mongo     :   `sudo docker start 1c62a46a5dd1`
 
+# ----------------------------VALIDAÇÃO DE DADOS-----------------------------------
+
+* evitar que alguem consiga chamar nossas rotas faltando alguns dos campos que a gente precise que sejam enviados;
+
+* yarn add celebrate  :   para validação de dados vindo na request, verificar se não vem vazio, é utiizado como middleware;
+* yarn add -D @types/hapi__joi    :   tipagem para utilizar o joi que vem dentro do celebrate;
+
+password: Joi.string().required(),
+password_confirmation: Joi.string().required().valid( Joi.ref('password'))
+`esses campos password acima, o valid esta fazendo com que so passe caso o password seja igual password_confirmation`;
+
+
+# ---------------------------VARIAVEIS DE AMBIENTE------------------------------------
+
+* criar um arquivo .env onde ira conter as credenciais da nossa aplicação;
+* instalar o pacote yarn add dotenv;
+* no tsconfig.json nos habilitamos a importação de arquivo js `"allowJs": true`;
+* agora no server nos declaramos `import'dotenv/config'`;
+* para remover um arquivo ja commitado no github, devemos utilizar o comando `git rm --cached ormconfig.json`, no caso o ormconfig.json;
+
+
+# -------------------------CLASS TRANFORMER--------------------------------------
+
+* class-transformer:    lib para caso vc queira transformar alguma informação antes de enviar para o front-end;
+* @Exclude()        //utilizado para remover esse campo de retorna para o front-end
+* @Expose()         //cria um novo campo para expor ao front-end;
+* é utilizado o classToClass/classToPlain(user) executar os comandos da entidade User.ts que no caso remove o campo password e altera o campo avatar;
+
+# ------------------------AWS ENVIO DE EMAIL---------------------------------------
+
+1- criar conta free na aws;
+2- ao entrar acessar a parte de amazon SES;
+3- necessario ter um dominio ou criar um;
+4- no amazon ses nos vamos em verify a new domain, e no janelinha colocamos nosso dominio, apos isso ele gera um name, type e value;
+5- na plataforma de gerenciamento do dominio (no caso foi usada a do google), foi adicionado ao *dns* do dominio o numero 'value' que foi gerado pelo SES;
+6- ir em `verify a new email address` e colocar seu email de envio de emails, pesquisar um gratuito. (zoro é free, mailchimp é pago) (sender, free);
+7- ir em `SMTP Settings` para configurar o envio de email e pegar as credenciais, não é recomendado p envio de muitos emails ao mesmo tempo. pois ele abre e fecha conexão o tempo todo.
+8- criamos o arquivo config/mail.ts para definir o drive que iremos usar;
+9- instala a sdk da aws `yarn add aws-sdk`, e configurar o SESMailProvider e o mail.ts;
+10- pega as credenciais na aws e coloca no .env (video aos 19:00min);
+
+OBS: error do nodemailer ao fazer o createTestAccount(), da timeout; provavel de alterar para o mailtrap;
+OBS: `alterar a implementação do ses pelo gmail`;
+
+
+# ------------------------Amazon S3 CDN---------------------------------------
+
+* utilizado para armazenar arquivos (imagens, videos, docs);
+
+- Escala vertical: Aumenta os recursos.
+- Escala horizontal: Cria um novo servidor (distribuição de carga);
+
+- adicionar permissões do amazon s3 no console da aws;
+
+- error ocorrido devido ao mime, onde não conseguia encontrar a função `getType()`, o erro ocorria pq o pacote de tipo estava errado, o certo foi `yarn add @types/mime`;
+
+- o uploadConfig.driver esta vindo como undefined, (process.env.STORAGE_DRIVER esta sendo setado ao iniciar aplicação, por isso vem undefined): SOLUÇÂO: tive que importar o `dotenv/config` no arquivo;
+
+- esta com erro de permissão, provavelmente as credenciais estão incorretas;
+# ---------------------------------------------------------
 * video com atraso, deixar o sincronismo em 5.9
 
 * arquivo tsconfig.json seria o arquivo de configuração do ts, onde passamos o lugar onde ira ficar o codigo compilado do ts, pq o node não lê codigo ts ai temos que compilar p js;
@@ -435,6 +495,11 @@ src/server.ts   :   `diretorio do aquivo de execução`;
 
 * podemos importar de outro modulo tranquilo, so não podemos na camada de dominio (modulo) importar uma dependencia da camada de infra;
 
-* comandos para startar a docker no linux do trampo é "dk" e apos "docker start 41d0affdd50e", apos isso podemos startar o o nosso servidor com 'yarn dev:server';
+* comandos para startar a docker no linux do trampo é "dk" e apos "docker start 41d0affdd50e" e "sudo docker start 1c62a46a5dd1" , apos isso podemos startar o o nosso servidor com 'yarn dev:server';
 
 * mudar os icones do vscode aperta (CTRL + P) dpois digita (>json) e escolhe a segunda opção, ai vai na chave "material-icon-theme.folders.associations" para alterar os icones;
+
+* pode ocorrer o erro ao fazer o upload de imagem, pois algumas vezes é apagado a pasta tmp/uploads
+
+* error do ethereal;
+* https://github.com/i-ramoss/rentx/blob/main/src/shared/container/providers/MailProvider/implementations/EtherealMailProvider.ts

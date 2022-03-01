@@ -1,7 +1,6 @@
-import nodemailer, { Transporter } from 'nodemailer';
-import { injectable, inject } from 'tsyringe';
-
 import IMailTemplateProvider from '@shared/container/providers/MailTemplateProvider/models/IMailTemplateProvider';
+import nodemailer, { Transporter } from 'nodemailer';
+import { inject, injectable } from 'tsyringe';
 import ISendMailDTO from '../dtos/ISendMailDTO';
 import IMailProvider from '../models/IMailProvider';
 
@@ -15,8 +14,27 @@ export default class EtherealMailProvider implements IMailProvider {
     private mailTemplateProvider: IMailTemplateProvider,
   ) {
     // criando conta de teste;
-    nodemailer.createTestAccount().then(account => {
-      const transporter = nodemailer.createTransport({
+    this.createClient();
+    // nodemailer.createTestAccount().then(account => {
+    //   const transporter = nodemailer.createTransport({
+    //     host: account.smtp.host,
+    //     port: account.smtp.port,
+    //     secure: account.smtp.secure,
+    //     auth: {
+    //       user: account.user,
+    //       pass: account.pass,
+    //     },
+    //   });
+
+    //   this.client = transporter;
+    // });
+  }
+
+  //change
+  private async createClient() {
+    try {
+      const account = await nodemailer.createTestAccount();
+      this.client = nodemailer.createTransport({
         host: account.smtp.host,
         port: account.smtp.port,
         secure: account.smtp.secure,
@@ -25,9 +43,9 @@ export default class EtherealMailProvider implements IMailProvider {
           pass: account.pass,
         },
       });
-
-      this.client = transporter;
-    });
+    } catch (err) {
+      console.error(`EtherealMailProvider - Error:\n${err}`);
+    }
   }
 
   public async sendMail({
@@ -36,6 +54,7 @@ export default class EtherealMailProvider implements IMailProvider {
     subject,
     templateData,
   }: ISendMailDTO): Promise<void> {
+    if (!this.client) await this.createClient();    //change
     const message = await this.client.sendMail({
       from: {
         name: from?.name || 'Equipe Gobarber',
