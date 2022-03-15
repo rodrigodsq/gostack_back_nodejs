@@ -57,3 +57,6 @@ class AuthenticateUserService {
 }
 
 export default AuthenticateUserService;
+
+
+//pode ocorrer um error no secret pq ele pode está vazio.

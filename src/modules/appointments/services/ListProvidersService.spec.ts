@@ -1,14 +1,20 @@
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
 import ListProvidersService from './ListProvidersService';
+import FakeCachedProvider from '@shared/container/providers/CacheProvider/fakes/FakeCachedProvider';
 
 let fakeUsersRepository: FakeUsersRepository;
 let listProviders: ListProvidersService;
+let fakeCachedProvider: FakeCachedProvider;
 
 describe('ListProviders', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
+    fakeCachedProvider = new FakeCachedProvider();
 
-    listProviders = new ListProvidersService(fakeUsersRepository);
+    listProviders = new ListProvidersService(
+        fakeUsersRepository,
+        fakeCachedProvider
+    );
   });
 
   // testando a busca por todos os prestadores, exceto o de id passado;

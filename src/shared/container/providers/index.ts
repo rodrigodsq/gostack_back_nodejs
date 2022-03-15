@@ -1,8 +1,7 @@
-// vs-code-organize-imports-disable-next-line
-// desabilitar o auto-import
 import './StorageProvider';
 import './MailTemplateProvider';
 import './MailProvider';
+import './CacheProvider';
 
 
 // o container desse arquivo, sera alocado no index do shared/container, para ser usado como injeção de dependencia;

@@ -456,6 +456,24 @@ OBS: `alterar a implementação do ses pelo gmail`;
 - o uploadConfig.driver esta vindo como undefined, (process.env.STORAGE_DRIVER esta sendo setado ao iniciar aplicação, por isso vem undefined): SOLUÇÂO: tive que importar o `dotenv/config` no arquivo;
 
 - esta com erro de permissão, provavelmente as credenciais estão incorretas;
+
+
+# ------------------------Cache com Redis---------------------------------
+
+- é um banco de dados utilizado para armazenar de forma mais performatica (mais rapida) uma query muito complexa ou um chamada que é feita varias vezes em um bd relacional;
+
+- Redis não tem tabelas, (conseguimos armazenar apenas chave valor);
+
+- instalando uma docker redis: `docker run --name redis -p 6379:6379 -d -t redis:alpine`
+
+# ----------------------------Segurança para Bruthe Force-----------------------------
+
+- Bruthe Force: a pessoas faz milhares de requisições dentro de 1s para seu servidor em algum endponit para faze-lo cair;
+
+- node-rate-limit-flexible: biblioteca que usaremos para resolver esse problema;
+   - yarn add rate-limiter-flexible;
+
+
 # ---------------------------------------------------------
 * video com atraso, deixar o sincronismo em 5.9
 
@@ -503,3 +521,5 @@ OBS: `alterar a implementação do ses pelo gmail`;
 
 * error do ethereal;
 * https://github.com/i-ramoss/rentx/blob/main/src/shared/container/providers/MailProvider/implementations/EtherealMailProvider.ts
+
+* todos os providers são iniciados junto com a aplicação;
