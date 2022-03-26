@@ -1,10 +1,10 @@
 import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 import AppError from '@shared/errors/AppError';
 import { format, getHours, isBefore, startOfHour } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 import Appointment from '../infra/typeorm/entities/appointment';
 import IAppointmentRepository from '../repositories/IAppointmentsRepository';
-import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface IRequest {
   provider_id: string;
@@ -48,6 +48,7 @@ class CreateAppointmentService {
 
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
+      provider_id
     );
 
     if (findAppointmentInSameDate) {

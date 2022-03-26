@@ -37,3 +37,9 @@ class Appointment {
 }
 
 export default Appointment;
+
+
+// @ManyToOne(() => User, {eager: true})
+//eager: ao trazer os dados, ele traz todos os dados de usuario (nome e etc..)
+//lazy: traz os dados, permite trazer atraves de relacionamento
+//eager loading: cria apenas uma query para chamar varios relacionamentos com determinado registro;
