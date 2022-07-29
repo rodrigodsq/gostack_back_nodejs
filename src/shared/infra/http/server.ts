@@ -13,15 +13,16 @@ import routes from './routes';
 
 const app = express();
 
-app.use(rateLimiter);
 app.use(cors());
 app.use(express.json());
 
 app.use('/files', express.static(uploadConfig.UploadsFolder));
 
+app.use(rateLimiter); // precisa ficar apos o de file pois ocorre varias chamadas para imagem e com isso pode cair no limit;
+
 app.use(routes);
 
-app.use(errors());      //para pegar os errors do celebrate (no caso quando vem alguma informação da request vazia);
+app.use(errors()); // para pegar os errors do celebrate (no caso quando vem alguma informação da request vazia);
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   // verificando se o erro é uam instancia da class AppError, pq se for que dizer que é um error originado pela nossa aplicação

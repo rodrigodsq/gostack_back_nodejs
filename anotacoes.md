@@ -424,6 +424,7 @@ password_confirmation: Joi.string().required().valid( Joi.ref('password'))
 * @Exclude()        //utilizado para remover esse campo de retorna para o front-end
 * @Expose()         //cria um novo campo para expor ao front-end;
 * é utilizado o classToClass/classToPlain(user) executar os comandos da entidade User.ts que no caso remove o campo password e altera o campo avatar;
+* classToPlain(classUtilizada) executa as funções dentro das class @Exclude() @Expose();
 
 # ------------------------AWS ENVIO DE EMAIL---------------------------------------
 
